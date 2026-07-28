@@ -11,19 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('bio')->nullable();
-            $table->enum('niveau', ['junior','intermediaire', 'senior'])->nullable();
-            $table->decimal('disponiblites', 10, 2)->nullable();
-            $table->rememberToken();
-            $table->timestamps();
-        });
+Schema::create('users', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->string('email')->unique();
+    $table->timestamp('email_verified_at')->nullable();
+    $table->string('password');
 
+    $table->text('bio')->nullable();
+
+    $table->enum('niveau', [
+        'junior',
+        'intermediaire',
+        'senior',
+    ])->nullable();
+
+    $table->decimal('disponibilites', 10, 2)->nullable();
+    $table->decimal('solde_heures', 8, 2)->default(0);
+    $table->enum('statut_compte', [
+        'actif',
+        'gele',
+    ])->default('actif');
+
+    $table->rememberToken();
+    $table->timestamps();
+});
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
