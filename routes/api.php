@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ServiceOfferController;
+use App\Http\Controllers\Api\ServiceRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -39,5 +40,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/offers/{serviceOffer}', [ServiceOfferController::class, 'update']);
     Route::delete('/offers/{serviceOffer}', [ServiceOfferController::class, 'destroy']);
     Route::get('/my-offers', [ServiceOfferController::class, 'myOffers']);
+});
+// Public
+Route::get('/requests', [ServiceRequestController::class, 'index']);
+Route::get('/requests/{serviceRequest}', [ServiceRequestController::class, 'show']);
+
+// Protected
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/requests', [ServiceRequestController::class, 'store']);
+    Route::put('/requests/{serviceRequest}', [ServiceRequestController::class, 'update']);
+    Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy']);
+    Route::get('/my-requests', [ServiceRequestController::class, 'myRequests']);
 });
 });

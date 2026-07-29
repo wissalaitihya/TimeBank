@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\ServiceOffer;
+use App\Models\ServiceRequest;
+use App\Policies\ServiceRequestPolicy;
 use App\Policies\ServiceOfferPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
@@ -22,6 +24,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::policy(ServiceOffer::class, ServiceOfferPolicy::class);
+        Gate::policy(ServiceRequest::class, ServiceRequestPolicy::class);
     }
 }
