@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Models\ServiceOffer;
 use App\Models\ServiceRequest;
 use App\Policies\ServiceRequestPolicy;
-use App\Policies\ServiceOfferPolicy;
 use Illuminate\Support\Facades\Gate;
+use App\Models\ServiceMatch;
+use App\Policies\ServiceMatchPolicy;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +25,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::policy(ServiceRequest::class, ServiceRequestPolicy::class);
+        Gate::policy(ServiceMatch::class, ServiceMatchPolicy::class);
     }
 }

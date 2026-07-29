@@ -10,9 +10,9 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register (Request $request)
+    public function register(Request $request)
     {
-        $validated=$request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
@@ -28,8 +28,8 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
         return response()->json([
-              'user' => $user,
-              'token' => $token,
+            'user' => $user,
+            'token' => $token,
 
         ], 201);
     }
@@ -51,8 +51,8 @@ class AuthController extends Controller
 
         $token = $user->createToken('api-token')->plainTextToken;
         return response()->json([
-              'user' => $user,
-              'token' => $token,
+            'user' => $user,
+            'token' => $token,
         ]);
     }
 
@@ -69,18 +69,23 @@ class AuthController extends Controller
 
     public function balance(Request $request)
     {
+        $user = $request->user();
+
         return response()->json([
-            
-            'solde_heures'   => $user->solde_heures,
-            'statut_compte'  => $user->statut_compte,
-            'warning'        => $user->isSoldeWarning(),
-            ]);
+            'solde_heures' => $user->solde_heures,
+            'statut_compte' => $user->statut_compte,
+            'warning' => $user->isSoldeWarning(),
+        ]);
     }
 
     public function transactions(Request $request)
     {
-        $user = $request->user()->transactionsReceived()->union($request->user()->transactionsSent())->latest()->paginate(15);
-        
+        $user = $request->user();
+        $transactions = $user->transactionsReceived()
+            ->union($user->transactionsSent())
+            ->latest()
+            ->paginate(15);
+
         return response()->json($transactions);
     }
 }

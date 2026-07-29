@@ -1,7 +1,7 @@
 <?php
 
+use App\Http\Controllers\Auth\GithubController;
 use App\Http\Controllers\ProfileController;
-use  App\Http\Controllers\Auth\GithubController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -18,7 +18,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/auth/github', [GithubController::class, 'redirectToProvider'])->name('auth.github');
+Route::get('/auth/github', [GithubController::class, 'redirect'])->name('auth.github');
 Route::get('/auth/github/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
 
 require __DIR__.'/auth.php';

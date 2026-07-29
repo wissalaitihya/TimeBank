@@ -2,7 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Database\Seeders\SkillSeeder;
+use Database\Seeders\UserSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -18,8 +19,8 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         $this->call([
-            SkillSeeder::class,
-            UserSeeder::class,
+            \Database\Seeders\SkillSeeder::class,
+            \Database\Seeders\UserSeeder::class,
         ]);
     }
 }
