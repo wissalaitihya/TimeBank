@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ServiceOfferController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -29,4 +30,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/me/transactions', [AuthController::class, 'transactions']);
 
     });
+    //Service Offers 
+Route::get('/offers', [ServiceOfferController::class, 'index']);
+Route::get('/offers/{serviceOffer}', [ServiceOfferController::class, 'show']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/offers', [ServiceOfferController::class, 'store']);
+    Route::put('/offers/{serviceOffer}', [ServiceOfferController::class, 'update']);
+    Route::delete('/offers/{serviceOffer}', [ServiceOfferController::class, 'destroy']);
+    Route::get('/my-offers', [ServiceOfferController::class, 'myOffers']);
+});
 });

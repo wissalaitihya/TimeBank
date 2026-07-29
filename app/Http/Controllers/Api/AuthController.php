@@ -77,7 +77,7 @@ class AuthController extends Controller
             ]);
     }
 
-    public function transacti9ons(Request $request)
+    public function transactions(Request $request)
     {
         $user = $request->user()->transactionsReceived()->union($request->user()->transactionsSent())->latest()->paginate(15);
         
