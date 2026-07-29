@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\Api\UserController;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ServiceOfferController;
 use App\Http\Controllers\Api\ServiceRequestController;
+use App\Http\Controllers\Api\ServiceMatchController;
+use App\Http\Controllers\Api\UserController;
+
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/user', function (Request $request) {
@@ -18,9 +20,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/login',    [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
 
-    Route::get('/users/{username}',           [UserController::class, 'show']);
-    Route::get('/users/{username}/stats',     [UserController::class, 'stats']);
-    Route::get('/users/{username}/badge.svg', [UserController::class, 'badge']);
+    Route::get('/users/{username}',           [\App\Http\Controllers\Api\UserController::class, 'show']);
+    Route::get('/users/{username}/stats',     [\App\Http\Controllers\Api\UserController::class, 'stats']);
+    Route::get('/users/{username}/badge.svg', [\App\Http\Controllers\Api\UserController::class, 'badge']);
 
     //Protected routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -47,9 +49,22 @@ Route::get('/requests/{serviceRequest}', [ServiceRequestController::class, 'show
 
 // Protected
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/requests', [ServiceRequestController::class, 'store']);
+    Route::post('/requests', [ServiceRequestController::class, 'store']); 
     Route::put('/requests/{serviceRequest}', [ServiceRequestController::class, 'update']);
     Route::delete('/requests/{serviceRequest}', [ServiceRequestController::class, 'destroy']);
     Route::get('/my-requests', [ServiceRequestController::class, 'myRequests']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/matches',                        [ServiceMatchController::class, 'index']);
+    Route::post('/matches',                       [ServiceMatchController::class, 'store']);
+    Route::get('/matches/{serviceMatch}',         [ServiceMatchController::class, 'show']);
+    Route::post('/matches/{serviceMatch}/accept', [ServiceMatchController::class, 'accept']);
+    Route::post('/matches/{serviceMatch}/refuse', [ServiceMatchController::class, 'refuse']);
+    Route::post('/matches/{serviceMatch}/schedule',[ServiceMatchController::class, 'schedule']);
+    Route::post('/matches/{serviceMatch}/confirm',[ServiceMatchController::class, 'confirm']);
+    Route::post('/matches/{serviceMatch}/dispute',[ServiceMatchController::class, 'dispute']);
+
 });
 });
