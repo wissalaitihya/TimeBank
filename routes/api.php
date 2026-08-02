@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceOfferController;
 use App\Http\Controllers\Api\ServiceRequestController;
 use App\Http\Controllers\Api\ServiceMatchController;
+use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\UserController;
 
 use Illuminate\Http\Request;
@@ -66,5 +67,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/matches/{serviceMatch}/confirm',[ServiceMatchController::class, 'confirm']);
     Route::post('/matches/{serviceMatch}/dispute',[ServiceMatchController::class, 'dispute']);
 
+});
+// Public
+Route::get('/users/{username}/reviews', [ReviewController::class, 'userReviews']);
+Route::get('/matches/{serviceMatch}/reviews', [ReviewController::class, 'matchReviews']);
+
+// Protected
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
 });
 });
