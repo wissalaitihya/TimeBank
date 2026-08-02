@@ -1,3 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+:root {
+    --bg:          #0A0A0A;
+    --bg-card:     #111111;
+    --bg-card2:    #161616;
+    --accent:      #ADFF2F;
+    --accent-dim:  rgba(173,255,47,0.12);
+    --text:        #FFFFFF;
+    --muted:       #888888;
+    --border:      #1F1F1F;
+    --sidebar:     240px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+}
