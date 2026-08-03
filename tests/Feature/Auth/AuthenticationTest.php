@@ -15,6 +15,7 @@ class AuthenticationTest extends TestCase
         $response = $this->get('/login');
 
         $response->assertStatus(200);
+        $response->assertSee('Bon retour.');
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void
@@ -50,5 +51,23 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_authenticated_users_are_redirected_away_from_the_login_screen(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/login');
+
+        $response->assertRedirect(route('dashboard', absolute: false));
+    }
+
+    public function test_authenticated_users_are_redirected_away_from_the_registration_screen(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get('/register');
+
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 }

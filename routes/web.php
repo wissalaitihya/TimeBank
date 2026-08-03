@@ -17,10 +17,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-Route::get('/auth/github', [GithubController::class, 'redirect'])->name('auth.github');
-Route::get('/auth/github/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
-
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
         ->name('dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.show');
@@ -51,6 +48,9 @@ Route::get('/explorer', function () { return view('requests.public'); })->name('
 Route::get('/offres', function () { return view('offers.public'); })->name('offers.public');
 Route::get('/communaute', function () { return view('community'); })->name('community');
 Route::get('/comment-ca-marche', function () { return view('how-it-works'); })->name('how-it-works');
+
+Route::get('/auth/github', [GithubController::class, 'redirect'])->name('auth.github');
+Route::get('/auth/github/callback', [GithubController::class, 'callback'])->name('auth.github.callback');
 
 
 require __DIR__.'/auth.php';

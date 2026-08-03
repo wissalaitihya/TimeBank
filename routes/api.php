@@ -4,8 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\ServiceOfferController;
 use App\Http\Controllers\Api\ServiceRequestController;
 use App\Http\Controllers\Api\ServiceMatchController;
-use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\ApiReviewController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,10 +19,6 @@ Route::prefix('v1')->group(function () {
 
     Route::post('/login',    [AuthController::class, 'login']);
     Route::post('/register', [AuthController::class, 'register']);
-
-    Route::get('/users/{username}',           [\App\Http\Controllers\Api\UserController::class, 'show']);
-    Route::get('/users/{username}/stats',     [\App\Http\Controllers\Api\UserController::class, 'stats']);
-    Route::get('/users/{username}/badge.svg', [\App\Http\Controllers\Api\UserController::class, 'badge']);
 
     //Protected routes
     Route::middleware('auth:sanctum')->group(function () {
@@ -69,12 +64,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 });
 // Public
-Route::get('/users/{username}/reviews', [ReviewController::class, 'userReviews']);
-Route::get('/matches/{serviceMatch}/reviews', [ReviewController::class, 'matchReviews']);
+Route::get('/users/{username}/reviews', [ApiReviewController::class, 'userReviews']);
+Route::get('/matches/{serviceMatch}/reviews', [ApiReviewController::class, 'matchReviews']);
 
 // Protected
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/reviews', [ReviewController::class, 'store']);
-    Route::get('/my-reviews', [ReviewController::class, 'myReviews']);
+    Route::post('/reviews', [ApiReviewController::class, 'store']);
+    Route::get('/my-reviews', [ApiReviewController::class, 'myReviews']);
 });
 });

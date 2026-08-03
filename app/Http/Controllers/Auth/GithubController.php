@@ -3,46 +3,87 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Skill;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use  App\Models\Skill;
-use  App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GithubController extends Controller
 {
-    public function redirect(){
+    public function redirect()
+    {
         return Socialite::driver('github')->redirect();
     }
 
-    public function callback(){
-     $githubUser = Socialite::driver('github')->user();
-     // to fincd or create the user
-     $user = User::firstOrCreate(
-        ['github_id' => $githubUser->getId()],
-        [
-                'name'                => $githubUser->getName() ?? $githubUser->getNickname(),
-                'email'               => $githubUser->getEmail(),
-                'password'            => bcrypt(str()->random(24)),
-                'github_username'     => $githubUser->getNickname(),
+    public function callback(Request $request): RedirectResponse
+    {
+        $githubUser = Socialite::driver('github')->user();
+
+        $githubId = (string) $githubUser->getId();
+        $nickname = (string) $githubUser->getNickname();
+        $email = strtolower(trim((string) $githubUser->getEmail()));
+
+        $user = User::where('github_id', $githubId)->first();
+
+        if ($user === null && $email !== '') {
+            $user = User::where('email', $email)->first();
+        }
+
+        if ($user) {
+            $user->update([
+                'github_id' => $githubId,
+                'github_username' => $nickname !== '' ? $nickname : null,
                 'github_access_token' => $githubUser->token,
-                'solde_heures'        => 2.00,
-                'statut_compte'       => 'actif',
-        ]
-     );
-      //update token if user already exists 
-      $user->update([
-        'github_access_token' => $githubUser->token,
-        'github_username'  => $githubUser->getNickname(),
-      ]);
-      
-      //auto-detect skills from github repos
-      $this->detectSkillsFromGithub($user);
-      Auth::login()($user);
+            ]);
+        } else {
+            $name = $githubUser->getName() ?: ($nickname !== '' ? $nickname : $githubId);
+
+            $user = User::create([
+                'name' => $name,
+                'username' => $this->uniqueUsername($nickname !== '' ? $nickname : $githubId),
+                'email' => $email !== '' ? $email : $githubId.'@users.noreply.github.com',
+                'email_verified_at' => now(),
+                'password' => bcrypt(Str::random(32)),
+                'github_id' => $githubId,
+                'github_username' => $nickname !== '' ? $nickname : null,
+                'github_access_token' => $githubUser->token,
+                'solde_heures' => 2.00,
+                'statut_compte' => 'actif',
+            ]);
+        }
+
+        $this->detectSkillsFromGithub($user);
+
+        Auth::login($user);
+        $request->session()->regenerate();
+
         return redirect()->route('dashboard');
     }
-    
+
+    private function uniqueUsername(string $preferred): string
+    {
+        $base = Str::lower(Str::slug($preferred, '-'));
+
+        if (strlen($base) < 3) {
+            $base = 'github-user';
+        }
+
+        $base = substr($base, 0, 30);
+        $username = $base;
+        $suffix = 1;
+
+        while (User::where('username', $username)->exists()) {
+            $username = substr($base, 0, 28 - strlen((string) $suffix)).'-'.$suffix;
+            $suffix++;
+        }
+
+        return $username;
+    }
+
     private function detectSkillsFromGithub(User $user): void
     {
         try {
@@ -97,6 +138,6 @@ class GithubController extends Controller
 
         } catch (\Exception $e) {
             // Silently fail — GitHub API is optional
-        }   
-    } 
+        }
+    }
 }
