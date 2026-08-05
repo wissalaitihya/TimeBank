@@ -16,7 +16,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable([
+    'name',
+    'username',
+    'email',
+    'password',
+    'bio',
+    'niveau',
+    'disponibilites',
+    'solde_heures',
+    'score_reputation',
+    'statut_compte',
+    'github_id',
+    'github_username',
+    'github_access_token',
+    'ai_generated_bio',
+    'ai_bio_metadata',
+    'api_token',
+])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -24,6 +41,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
         'bio',
