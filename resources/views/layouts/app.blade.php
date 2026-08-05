@@ -11,7 +11,7 @@
 
 <!-- ── SIDEBAR ──────────────────────────────────────────── -->
 <aside style="
-    width:240px;min-height:100vh;
+    width:195px;min-height:100vh;
     background:#0D0D0D;
     border-right:1px solid #1F1F1F;
     display:flex;flex-direction:column;
@@ -20,9 +20,9 @@
     <!-- Logo -->
     <div style="padding:18px 16px;border-bottom:1px solid #1F1F1F;">
         <a href="{{ route('dashboard') }}" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-            <div style="width:30px;height:30px;background:#ADFF2F;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⏱</div>
+            <div style="width:30px;height:30px;background:#FF6500;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">⏱</div>
             <span style="font-size:15px;font-weight:600;color:#fff;font-family:'Playfair Display',serif;">
-                Time<em style="color:#ADFF2F;font-style:italic;">Bank</em>
+                Time<em style="color:#FF6500;font-style:italic;">Bank</em>
             </span>
         </a>
     </div>
@@ -60,16 +60,19 @@
                 display:flex;align-items:center;gap:10px;
                 padding:8px 10px;border-radius:8px;
                 text-decoration:none;font-size:13px;
-                color:{{ $active ? '#ADFF2F' : '#888' }};
-                background:{{ $active ? 'rgba(173,255,47,0.1)' : 'transparent' }};
+                color:{{ $active ? '#F5F2ED' : '#888' }};
+                background:{{ $active ? 'rgba(255,101,0,0.08)' : 'transparent' }};
                 font-weight:{{ $active ? '500' : '400' }};
+                border-left:{{ $active ? '2px solid #FF6500' : '2px solid transparent' }};
+                padding-left:{{ $active ? '8px' : '10px' }};
+                margin-left:{{ $active ? '-2px' : '0' }};
                 transition:all 0.15s;
             "
             onmouseover="if(!{{ $active ? 'true' : 'false' }})this.style.background='#111',this.style.color='#fff'"
             onmouseout="if(!{{ $active ? 'true' : 'false' }})this.style.background='transparent',this.style.color='#888'"
             >
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                     stroke="{{ $active ? '#ADFF2F' : '#666' }}" stroke-width="1.8"
+                     stroke="{{ $active ? '#FF6500' : '#666' }}" stroke-width="1.8"
                      style="flex-shrink:0;">
                     {!! $item['icon'] !!}
                 </svg>
@@ -82,7 +85,7 @@
     <!-- Bottom user card -->
     <div style="padding:10px;border-top:1px solid #1F1F1F;">
         <div style="display:flex;align-items:center;gap:10px;padding:10px;border-radius:8px;background:#111;">
-            <div style="width:32px;height:32px;border-radius:50%;background:#ADFF2F;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#FF6500;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;flex-shrink:0;">
                 {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
             </div>
             <div style="flex:1;min-width:0;">
@@ -90,7 +93,7 @@
                     {{ auth()->user()->name }}
                 </div>
                 <div style="font-size:11px;color:#888;display:flex;align-items:center;gap:4px;">
-                    <span style="width:5px;height:5px;border-radius:50%;background:{{ auth()->user()->statut_compte === 'actif' ? '#ADFF2F' : '#ef4444' }};display:inline-block;"></span>
+                    <span style="width:5px;height:5px;border-radius:50%;background:{{ auth()->user()->statut_compte === 'actif' ? '#FF6500' : '#ef4444' }};display:inline-block;"></span>
                     {{ auth()->user()->statut_compte === 'actif' ? 'Actif' : 'Gelé' }}
                 </div>
             </div>
@@ -113,18 +116,18 @@
 </aside>
 
 <!-- ── MAIN CONTENT ─────────────────────────────────────── -->
-<div style="margin-left:240px;flex:1;min-height:100vh;display:flex;flex-direction:column;">
+<div style="margin-left:195px;flex:1;min-height:100vh;display:flex;flex-direction:column;">
 
     <!-- Top bar -->
     <header style="height:54px;border-bottom:1px solid #1F1F1F;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;background:#0A0A0A;z-index:40;">
         <div></div>
         <div style="display:flex;align-items:center;gap:12px;">
             <!-- Balance pill -->
-            <div style="display:flex;align-items:center;gap:6px;background:rgba(173,255,47,0.1);border:1px solid rgba(173,255,47,0.2);border-radius:20px;padding:5px 12px;font-size:12px;color:#ADFF2F;font-weight:600;">
+            <div style="display:flex;align-items:center;gap:6px;background:rgba(255,101,0,0.10);border:1px solid rgba(255,101,0,0.22);border-radius:20px;padding:5px 12px;font-size:12px;color:#FF6500;font-weight:600;">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
                 {{ number_format(auth()->user()->solde_heures, 2) }}h
             </div>
-            <a href="{{ route('requests.create') }}" style="display:inline-flex;align-items:center;gap:5px;background:#ADFF2F;color:#000;font-weight:700;font-size:12px;padding:7px 14px;border-radius:8px;text-decoration:none;">
+            <a href="{{ route('requests.create') }}" style="display:inline-flex;align-items:center;gap:5px;background:#FF6500;color:#000;font-weight:700;font-size:12px;padding:7px 14px;border-radius:8px;text-decoration:none;">
                 + Nouvelle demande
             </a>
         </div>
@@ -132,7 +135,7 @@
 
     <!-- Flash messages -->
     @if(session('success'))
-        <div style="margin:16px 28px 0;background:rgba(173,255,47,0.08);border:1px solid rgba(173,255,47,0.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#ADFF2F;">
+        <div style="margin:16px 28px 0;background:rgba(255,101,0,0.08);border:1px solid rgba(255,101,0,0.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#FF6500;">
             {{ session('success') }}
         </div>
     @endif
