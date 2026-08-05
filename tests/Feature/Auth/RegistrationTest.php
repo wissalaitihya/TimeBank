@@ -15,7 +15,7 @@ class RegistrationTest extends TestCase
         $response = $this->get('/register');
 
         $response->assertStatus(200);
-        $response->assertSee('Rejoindre TimeBank');
+        $response->assertSee('Créer mon compte');
     }
 
     public function test_new_users_can_register_with_a_valid_username(): void
