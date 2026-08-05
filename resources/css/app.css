@@ -149,69 +149,9 @@ body {
 
 /*
 |--------------------------------------------------------------------------
-| Profile page — sidebar & layout accent override
+| Profile page — layout override
 |--------------------------------------------------------------------------
-| Scope all lime-to-orange overrides under [data-page="profile"].
-| The attribute lives on <body>, so all sidebar + top-bar descendants match.
+| The profile page now uses the same shared layout as all other pages.
+| No additional overrides are needed since the global layout already
+| uses the orange palette, 195px sidebar, and correct active nav styling.
 */
-
-/* Narrower sidebar to match reference */
-[data-page="profile"] aside {
-    width: 195px !important;
-}
-
-[data-page="profile"] div[style*="margin-left:240px"] {
-    margin-left: 195px !important;
-}
-
-/* Hide nav icons — reference shows text-only navigation */
-[data-page="profile"] nav a svg {
-    display: none !important;
-}
-
-/* Nav links, buttons, text with lime color */
-[data-page="profile"] [style*="color:#ADFF2F"] {
-    color: #FF6500 !important;
-}
-
-/* Divs / elements with solid lime background */
-[data-page="profile"] [style*="background:#ADFF2F"] {
-    background: #FF6500 !important;
-}
-
-/* Override active nav: remove green bg, keep text white */
-[data-page="profile"] nav a[style*="rgba(173,255,47"] {
-    background: transparent !important;
-    color: #F2EEE8 !important;
-    font-weight: 600 !important;
-    border-left: 2px solid #FF6500;
-    padding-left: 8px !important;
-    margin-left: -2px;
-}
-
-/* rgba lime backgrounds (balance pill, flash messages) */
-[data-page="profile"] header [style*="rgba(173,255,47"] {
-    background: rgba(255, 101, 0, 0.1) !important;
-    color: #FF6500 !important;
-    border-color: rgba(255, 101, 0, 0.2) !important;
-}
-
-/* SVG stroke attributes (nav icons) */
-[data-page="profile"] svg[stroke="#ADFF2F"] {
-    stroke: #FF6500 !important;
-}
-
-/* Override green "Nouvelle demande" button in top bar */
-[data-page="profile"] a[style*="background:#ADFF2F"] {
-    background: #FF6500 !important;
-}
-
-/* Hide the top bar on profile page to match reference */
-[data-page="profile"] header[style*="position:sticky"] {
-    display: none !important;
-}
-
-/* Remove main padding since header is hidden */
-[data-page="profile"] main[style*="padding:28px"] {
-    padding-top: 0 !important;
-}
