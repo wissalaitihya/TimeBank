@@ -7,7 +7,7 @@
     <title>TimeBank — {{ $title ?? 'Dashboard' }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body style="background:#0A0A0A;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;display:flex;margin:0;">
+<body style="background:#0A0A0A;color:#fff;font-family:'Inter',sans-serif;min-height:100vh;display:flex;margin:0;" {{ $attributes }}>
 
 <!-- ── SIDEBAR ──────────────────────────────────────────── -->
 <aside style="
