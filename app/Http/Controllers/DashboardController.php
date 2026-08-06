@@ -57,12 +57,32 @@ class DashboardController extends Controller
             'reviews_recues'   => $user->reviewsReceived()->count(),
         ];
 
-        return view('dashboard', compact(
-            'user',
-            'upcomingSessions',
-            'recentTransactions',
-            'pendingMatches',
-            'stats'
-        ));
+        $topHelpers = \App\Models\User::with('skills')
+    ->where('id', '!=', auth()->id())
+    ->where('statut_compte', 'actif')
+    ->orderByDesc('score_reputation')
+    ->limit(3)
+    ->get();
+
+$frequentTags = $user->reviewsReceived()
+    ->whereNotNull('tags')
+    ->get()
+    ->flatMap(fn($r) => $r->tags ?? [])
+    ->countBy()
+    ->sortDesc()
+    ->keys()
+    ->take(3)
+    ->toArray();
+
+
+return view('dashboard', compact(
+    'user',
+    'upcomingSessions',
+    'recentTransactions',
+    'pendingMatches',
+    'stats',
+    'topHelpers',
+    'frequentTags'
+));
     }
 }
