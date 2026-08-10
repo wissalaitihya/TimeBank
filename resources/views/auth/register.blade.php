@@ -34,6 +34,26 @@
                         >
                             @csrf
 
+
+                            @if ($errors->any())
+    <div style="
+        margin-bottom: 20px;
+        padding: 15px;
+        border: 1px solid #ff6500;
+        border-radius: 8px;
+        background: #211209;
+        color: #ffffff;
+    ">
+        <strong>Impossible de créer le compte :</strong>
+
+        <ul style="margin: 10px 0 0; padding-left: 20px;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
                             {{-- GitHub --}}
                             <a
                                 href="{{ route('auth.github') }}"
@@ -81,6 +101,30 @@
                                 @enderror
                             </div>
 
+                            {{-- Username --}}
+<div class="tbk-field">
+    <label for="username" class="tbk-label">
+        Nom d’utilisateur
+    </label>
+
+    <input
+        id="username"
+        type="text"
+        name="username"
+        value="{{ old('username') }}"
+        class="tbk-input"
+        placeholder="sara-dev"
+        required
+        autocomplete="username"
+    >
+
+    @error('username')
+        <div class="tbk-errors" role="alert">
+            <span>{{ $message }}</span>
+        </div>
+    @enderror
+</div>
+
                             {{-- Email --}}
                             <div class="tbk-field">
                                 <label for="email" class="tbk-label">
@@ -95,7 +139,7 @@
                                     class="tbk-input"
                                     placeholder="vous@exemple.com"
                                     required
-                                    autocomplete="username"
+                                    autocomplete="email"
                                 >
 
                                 @error('email')

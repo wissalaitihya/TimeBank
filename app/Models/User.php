@@ -8,6 +8,7 @@ use App\Models\ServiceRequest;
 use App\Models\Skill;
 use App\Models\ServiceMatch;
 use App\Models\Transaction;
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\Review;
 use App\Models\Dispute;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -37,7 +38,7 @@ use Illuminate\Notifications\Notifiable;
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+   use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
