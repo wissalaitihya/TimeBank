@@ -23,12 +23,12 @@ class StoreServiceRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'skill_id'      => 'required|exists:skills,id',
-            'titre'         => 'required|string|max:255',
-            'description'   => 'required|string|min:20',
-            'duree_estimee' => 'required|numeric|min:0.25|max:8',
-            'urgence'       => 'sometimes|in:low,normal,high',
-        ];
+        'titre' => ['required', 'string', 'max:80'],
+        'description' => ['required', 'string', 'max:1000'],
+        'skill_id' => ['required', 'exists:skills,id'],
+        'duree_estimee' => ['required', 'numeric', 'min:0.25'],
+        'urgence' => ['required', 'in:low,normal,high'],
+    ];
     }
 
     public function messages(): array

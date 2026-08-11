@@ -11,7 +11,7 @@ class ServiceOffer extends Model
 
     protected $fillable = [
       'user_id',
-      'skill-id',
+      'skill_id',
       'titre',
       'description',
       'duree_estimee',

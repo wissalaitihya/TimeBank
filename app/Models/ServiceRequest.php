@@ -11,6 +11,7 @@ class ServiceRequest extends Model
         'skill_id',
         'titre',
         'duree_estimee',
+        'description',
         'urgence',
         'statut',
         'ai_status',
