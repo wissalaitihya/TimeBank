@@ -89,11 +89,28 @@ jobs:
       - name: Build frontend assets
         run: npm run build
 
+      - name: Verify build manifest exists
+        run: test -f public/build/manifest.json
+
       - name: Clear Laravel configuration
         run: php artisan optimize:clear
 
       - name: Run database migrations
         run: php artisan migrate:fresh --force
 
-      - name: Run Pest tests
-        run: php artisan test --display-warnings
+      - name: Run tests with full diagnostics
+        run: |
+          set -o pipefail
+          ./vendor/bin/phpunit \
+            --display-warnings \
+            --display-deprecations \
+            --display-notices \
+            --testdox \
+            2>&1 | tee test-output.log
+
+      - name: Upload test output log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: test-output.log
