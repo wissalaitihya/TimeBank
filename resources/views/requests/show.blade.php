@@ -44,20 +44,97 @@
     </div>
 
     {{-- Description --}}
-    <div style="background:#111;border:1px solid #1f1f1f;border-radius:12px;padding:22px 24px;margin-bottom:14px;">
-        <div style="font-size:11px;font-weight:600;color:#555;margin-bottom:10px;letter-spacing:0.08em;text-transform:uppercase;">Description</div>
-        <p style="font-size:14px;color:#ccc;line-height:1.75;white-space:pre-wrap;">{{ $serviceRequest->description }}</p>
+    <div style="background:#111;border:1px solid #1f1f1f;border-radius:12px;padding:26px 28px;">
 
-        @if($serviceRequest->ai_status === 'done' && $serviceRequest->description_originale !== $serviceRequest->description)
-            <div style="margin-top:14px;padding-top:14px;border-top:1px solid #1a1a1a;">
-                <div style="font-size:10px;color:#ADFF2F;margin-bottom:6px;letter-spacing:0.08em;text-transform:uppercase;">✨ Améliorée par l'IA</div>
-                <details>
-                    <summary style="font-size:12px;color:#555;cursor:pointer;">Voir la description originale</summary>
-                    <p style="font-size:13px;color:#555;line-height:1.65;margin-top:8px;">{{ $serviceRequest->description_originale }}</p>
-                </details>
+    @if($serviceRequest->ai_status === 'done' && $serviceRequest->ai_suggestion)
+
+    @php
+        $suggestion = $serviceRequest->ai_suggestion;
+
+        $urgencyLabels = [
+            'low' => 'Faible',
+            'normal' => 'Normale',
+            'high' => 'Élevée',
+        ];
+
+        $suggestedUrgency =
+            $suggestion['urgence_suggeree'] ?? null;
+    @endphp
+
+        <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#a3ff12;margin-bottom:12px;">
+            ✨ Suggestion générée par l’IA
+        </div>
+
+        <h2 style="font-size:18px;color:#fff;margin-bottom:12px;">
+            {{ $suggestion['titre_ameliore'] ?? $serviceRequest->titre }}
+        </h2>
+
+        <p style="font-size:14px;color:#ddd;line-height:1.7;">
+            {{ $suggestion['description_structuree'] ?? $serviceRequest->description }}
+        </p>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;">
+            <span style="background:#181818;border:1px solid #292929;border-radius:20px;padding:6px 12px;font-size:11px;color:#aaa;">
+                Compétence détectée :
+                {{ $suggestion['skill_detecte'] ?? 'Non précisée' }}
+            </span>
+
+            <span style="background:#181818;border:1px solid #292929;border-radius:20px;padding:6px 12px;font-size:11px;color:#aaa;">
+                Urgence suggérée :
+                {{ $urgencyLabels[$suggestedUrgency] ?? 'Non précisée' }}
+            </span>
+
+            <span style="background:#181818;border:1px solid #292929;border-radius:20px;padding:6px 12px;font-size:11px;color:#aaa;">
+                Durée suggérée :
+                {{ $suggestion['duree_estimee'] ?? 'Non précisée' }}h
+            </span>
+        </div>
+
+        <details style="margin-top:20px;">
+            <summary style="font-size:12px;color:#777;cursor:pointer;">
+                Voir la description originale
+            </summary>
+
+            <div style="margin-top:12px;padding:16px;background:#0d0d0d;border-radius:8px;">
+                <p style="font-size:14px;color:#999;line-height:1.7;">
+                    {{ $serviceRequest->description }}
+                </p>
             </div>
-        @endif
-    </div>
+        </details>
+
+    @elseif($serviceRequest->ai_status === 'pending')
+
+        <div style="font-size:12px;color:#FFAE25;margin-bottom:12px;">
+            Analyse IA en cours…
+        </div>
+
+        <p style="font-size:14px;color:#ddd;line-height:1.7;">
+            {{ $serviceRequest->description }}
+        </p>
+
+    @elseif($serviceRequest->ai_status === 'skipped')
+
+        <div style="font-size:12px;color:#888;margin-bottom:12px;">
+            Suggestion IA indisponible
+        </div>
+
+        <p style="font-size:14px;color:#ddd;line-height:1.7;">
+            {{ $serviceRequest->description }}
+        </p>
+
+    @else
+
+        <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:#666;margin-bottom:12px;">
+            Description
+        </div>
+
+        <p style="font-size:14px;color:#ddd;line-height:1.7;">
+            {{ $serviceRequest->description }}
+        </p>
+
+    @endif
+
+</div>
 
     {{-- Propose match (for other users) --}}
     @if($serviceRequest->user_id !== auth()->id() && $serviceRequest->statut === 'open')
