@@ -42,7 +42,9 @@
     </div>
 
     @forelse($transactions as $tx)
-        @php $isCredit = in_array($tx->type, ['credit', 'bonus']); @endphp
+        @php
+    $isCredit = (int) $tx->to_user_id === (int) auth()->id();
+@endphp
         <div style="display:grid;grid-template-columns:1fr 3fr 120px;padding:14px 20px;border-bottom:1px solid #1a1a1a;align-items:center;"
              onmouseover="this.style.background='rgba(255,255,255,0.01)'"
              onmouseout="this.style.background='transparent'">
@@ -66,19 +68,16 @@
                         {{ $tx->description }}
                     </div>
                     <div style="font-size:11px;color:#444;margin-top:1px;display:flex;align-items:center;gap:6px;">
-                        <span style="padding:1px 6px;border-radius:20px;font-size:10px;
-                            {{ $tx->type === 'credit' ? 'background:rgba(173,255,47,0.06);color:#6aaa1f;'
-                            : ($tx->type === 'debit'  ? 'background:rgba(239,68,68,0.06);color:#c05050;'
-                            : ($tx->type === 'bonus'  ? 'background:rgba(59,130,246,0.06);color:#5090c0;'
-                            :                           'background:rgba(245,158,11,0.06);color:#c09030;')) }}">
-                            {{ match($tx->type) {
-                                'credit' => 'Crédit',
-                                'debit'  => 'Débit',
-                                'bonus'  => 'Bonus',
-                                'refund' => 'Remboursement',
-                                default  => $tx->type,
-                            } }}
-                        </span>
+                        <span style="
+    padding:1px 6px;
+    border-radius:20px;
+    font-size:10px;
+    {{ $isCredit
+        ? 'background:rgba(173,255,47,0.06);color:#6aaa1f;'
+        : 'background:rgba(239,68,68,0.06);color:#c05050;' }}
+">
+    {{ $isCredit ? 'Crédit' : 'Débit' }}
+</span>
                         @if($tx->match?->offer?->skill)
                             <span style="color:#444;">· {{ $tx->match->offer->skill->nom }}</span>
                         @endif

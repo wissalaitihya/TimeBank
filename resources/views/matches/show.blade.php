@@ -771,9 +771,11 @@
                             @endforeach
                         </div>
                     </div>
-
-                    {{-- Accept / Refuse (pending, requester only) --}}
-                    @if($serviceMatch->statut === 'pending' && $isRequester)
+                    {{-- Accept / Refuse: only the participant who did not create the proposal --}}
+@if(
+    $serviceMatch->statut === 'pending' &&
+    (int) $serviceMatch->proposed_by !== (int) auth()->id()
+)
                         <div class="mx-panel mx-panel--action">
                             <div class="mx-panel-title">Répondre au match</div>
                             @if($serviceMatch->message)

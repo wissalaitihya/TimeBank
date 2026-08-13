@@ -42,7 +42,7 @@ class ServiceMatch extends Model
 
     public function request()
     {
-        return $this->belongsTo(ServiceRequests::class, 'request_id');
+        return $this->belongsTo(ServiceRequest::class, 'request_id');
     }
 
     public function helper()

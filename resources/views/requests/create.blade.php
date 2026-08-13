@@ -16,6 +16,13 @@
         {{-- Form --}}
         <form method="POST" action="{{ route('requests.store') }}">
             @csrf
+            @if(request()->filled('offer_id'))
+             <input
+                type="hidden"
+                name="offer_id"
+                value="{{ request('offer_id') }}"
+             >
+            @endif
 
             <div style="background:#111;border:1px solid #1f1f1f;border-radius:12px;padding:24px;margin-bottom:12px;">
 

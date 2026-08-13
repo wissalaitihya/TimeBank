@@ -7,6 +7,8 @@ use App\Http\Requests\StoreServiceRequestRequest;
 use App\Http\Requests\UpdateServiceRequestRequest;
 use App\Jobs\ImproveRequestWithAI;
 use App\Models\ServiceRequest;
+use App\Models\ServiceOffer;
+use App\Models\ServiceMatch;
 use App\Models\Skill;
 use Illuminate\Http\Request;
 
@@ -58,22 +60,69 @@ class ServiceRequestController extends Controller
 
     // ── Store ──────────────────────────────────────────────────────────────
     public function store(StoreServiceRequestRequest $request)
-    {
-        $this->authorize('create', ServiceRequest::class);
+{
+    $this->authorize('create', ServiceRequest::class);
 
-        $validated = $request->validated();
-        $validated['description_originale'] = $validated['description'];
-        $validated['ai_status'] = 'pending';
+    $validated = $request->validated();
 
-        $serviceRequest = $request->user()
-            ->serviceRequests()
-            ->create($validated);
+    // offer_id is used for the match, not stored in service_requests.
+    $offerId = $validated['offer_id'] ?? null;
+    unset($validated['offer_id']);
 
-        ImproveRequestWithAI::dispatch($serviceRequest);
+    $validated['description_originale'] = $validated['description'];
+    $validated['ai_status'] = 'pending';
 
-        return redirect()->route('requests.index')
-            ->with('success', 'Demande publiée. L\'IA améliore ta description en arrière-plan.');
+    $serviceRequest = $request->user()
+        ->serviceRequests()
+        ->create($validated);
+
+    ImproveRequestWithAI::dispatch($serviceRequest);
+
+    // If the request came from a selected offer, create the match.
+    if ($offerId) {
+        $offer = ServiceOffer::query()
+            ->where('statut', 'active')
+            ->findOrFail($offerId);
+
+        if ($offer->user_id === $request->user()->id) {
+            return redirect()
+                ->route('requests.show', $serviceRequest)
+                ->with(
+                    'error',
+                    'Vous ne pouvez pas créer un match avec votre propre offre.'
+                );
+        }
+
+        $match = ServiceMatch::create([
+            'offer_id' => $offer->id,
+            'request_id' => $serviceRequest->id,
+            'helper_id' => $offer->user_id,
+            'requester_id' => $request->user()->id,
+            'proposed_by' => $request->user()->id,
+            'message' => null,
+            'statut' => 'pending',
+            'estimated_duration' => $serviceRequest->duree_estimee,
+        ]);
+
+        $serviceRequest->update([
+            'statut' => 'matched',
+        ]);
+
+        return redirect()
+            ->route('matches.show', $match)
+            ->with(
+                'success',
+                'Demande créée et match proposé avec succès.'
+            );
     }
+
+    return redirect()
+        ->route('requests.index')
+        ->with(
+            'success',
+            'Demande publiée. L\'IA améliore ta description en arrière-plan.'
+        );
+}
 
     // ── Show ───────────────────────────────────────────────────────────────
     public function show(ServiceRequest $serviceRequest)

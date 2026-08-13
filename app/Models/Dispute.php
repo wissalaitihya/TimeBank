@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Dispute extends Model
 {
+     protected $table = 'dispute';
     protected $fillable = [
         'service_match_id',
         'opened_by',
