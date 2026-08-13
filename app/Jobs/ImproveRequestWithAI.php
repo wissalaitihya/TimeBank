@@ -89,27 +89,31 @@ class ImproveRequestWithAI implements ShouldQueue
 
     private function buildPrompt(): string
     {
-        return <<<PROMPT
-        Tu es un assistant technique expert qui aide les développeurs à
-        structurer leurs demandes d'aide technique.
+         return 'Tu reformules une demande d\'aide technique.
 
-        Voici la demande originale :
-        Titre : {$this->serviceRequest->titre}
-        Urgence : {$this->serviceRequest->urgence}
-        Durée estimée : {$this->serviceRequest->duree_estimee}h
-        Compétence : {$this->serviceRequest->skill->nom}
+Demande originale :
+Titre : ' . $this->serviceRequest->titre . '
+Description : ' . $this->serviceRequest->description . '
+Compétence sélectionnée : ' . $this->serviceRequest->skill->nom . '
 
-        Reformule et structure cette demande.
+Règles obligatoires :
+- N\'invente aucune information absente de la demande originale.
+- N\'invente aucun code d\'erreur.
+- N\'invente aucune technologie non mentionnée.
+- N\'invente aucune tentative effectuée par l\'utilisateur.
+- Si une information est inconnue, écris "Non précisé".
+- Conserve le sens exact de la demande.
+- L\'urgence doit être uniquement : low, normal ou high.
+- La durée doit être un nombre exprimé en heures.
 
-        Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks :
-        {
-          "titre_ameliore": "Titre clair et technique (max 80 caractères)",
-          "description_structuree": "Description avec contexte, problème exact, tentatives et comportement attendu",
-          "urgence_suggeree": "low|normal|high",
-          "duree_estimee": 1.0,
-          "skill_detecte": "nom du skill principal"
-        }
-        PROMPT;
+Réponds uniquement avec ce JSON :
+{
+  "titre_ameliore": "titre clair, sans information inventée",
+  "description_structuree": "description fidèle à la demande originale",
+  "urgence_suggeree": "low, normal ou high",
+  "duree_estimee": 1,
+  "skill_detecte": "compétence réellement mentionnée ou sélectionnée"
+}';
     }
 
     private function extractJson(string $text): string

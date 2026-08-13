@@ -16,6 +16,13 @@
         {{-- Form --}}
         <form method="POST" action="{{ route('requests.store') }}">
             @csrf
+            @if(request()->filled('offer_id'))
+             <input
+                type="hidden"
+                name="offer_id"
+                value="{{ request('offer_id') }}"
+             >
+            @endif
 
             <div style="background:#111;border:1px solid #1f1f1f;border-radius:12px;padding:24px;margin-bottom:12px;">
 
@@ -82,18 +89,78 @@
                     <div>
                         <label style="display:block;font-size:12px;color:#888;margin-bottom:6px;">Durée estimée</label>
                         <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                            @foreach([0.5 => '0.5h', 0.75 => '0.75h', 1 => '1h', 1.5 => '1.5h'] as $val => $label)
-                                <label style="cursor:pointer;">
-                                    <input type="radio" name="duree_estimee" value="{{ $val }}"
-                                           {{ old('duree_estimee', 1) == $val ? 'checked' : '' }}
-                                           style="display:none;"
-                                           onchange="document.querySelectorAll('.dur-btn').forEach(b=>{b.style.background='#151311';b.style.color='#888';b.style.borderColor='rgba(255,255,255,0.08)'});this.parentElement.querySelector('.dur-btn').style.background='rgba(255,101,0,0.12)';this.parentElement.querySelector('.dur-btn').style.color='#FF6500';this.parentElement.querySelector('.dur-btn').style.borderColor='rgba(255,101,0,0.35)';this.parentElement.querySelector('.dur-btn').style.boxShadow='inset 0 0 12px rgba(255,101,0,0.06)'"/>
-                                    <span class="dur-btn" style="display:inline-block;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:500;border:1px solid {{ old('duree_estimee', 1) == $val ? 'rgba(255,101,0,0.35)' : 'rgba(255,255,255,0.08)' }};background:{{ old('duree_estimee', 1) == $val ? 'rgba(255,101,0,0.12)' : '#151311' }};color:{{ old('duree_estimee', 1) == $val ? '#FF6500' : '#888' }};transition:all 0.15s;{{ old('duree_estimee', 1) == $val ? 'box-shadow:inset 0 0 12px rgba(255,101,0,0.06);' : '' }}">
-                                        {{ $label }}
-                                    </span>
-                                </label>
-                            @endforeach
-                        </div>
+                            @php
+    $durations = [
+        ['value' => '0.5', 'label' => '0.5h'],
+        ['value' => '0.75', 'label' => '0.75h'],
+        ['value' => '1', 'label' => '1h'],
+        ['value' => '1.5', 'label' => '1.5h'],
+    ];
+@endphp
+
+@foreach($durations as $duration)
+    @php
+        $isDurationSelected =
+            (string) old('duree_estimee', '1') === $duration['value'];
+    @endphp
+
+    <label style="cursor:pointer;">
+        <input
+            type="radio"
+            name="duree_estimee"
+            value="{{ $duration['value'] }}"
+            {{ $isDurationSelected ? 'checked' : '' }}
+            style="display:none;"
+            onchange="
+                document.querySelectorAll('.dur-btn').forEach(button => {
+                    button.style.background = '#151311';
+                    button.style.color = '#888';
+                    button.style.borderColor = 'rgba(255,255,255,0.08)';
+                    button.style.boxShadow = 'none';
+                });
+
+                const button =
+                    this.parentElement.querySelector('.dur-btn');
+
+                button.style.background = 'rgba(255,101,0,0.12)';
+                button.style.color = '#FF6500';
+                button.style.borderColor = 'rgba(255,101,0,0.35)';
+                button.style.boxShadow =
+                    'inset 0 0 12px rgba(255,101,0,0.06)';
+            "
+        >
+
+        <span
+            class="dur-btn"
+            style="
+                display:inline-block;
+                padding:6px 12px;
+                border-radius:8px;
+                font-size:12px;
+                font-weight:500;
+                border:1px solid {{ $isDurationSelected
+                    ? 'rgba(255,101,0,0.35)'
+                    : 'rgba(255,255,255,0.08)' }};
+                background:{{ $isDurationSelected
+                    ? 'rgba(255,101,0,0.12)'
+                    : '#151311' }};
+                color:{{ $isDurationSelected ? '#FF6500' : '#888' }};
+                transition:all 0.15s;
+                {{ $isDurationSelected
+                    ? 'box-shadow:inset 0 0 12px rgba(255,101,0,0.06);'
+                    : '' }}
+            "
+        >
+            {{ $duration['label'] }}
+        </span>
+    </label>
+@endforeach
+</div>
+@error('duree_estimee')
+    <p style="font-size:11px;color:#f87171;margin-top:6px;">
+        {{ $message }}
+    </p>
+@enderror
                     </div>
                     <div>
                         <label style="display:block;font-size:12px;color:#888;margin-bottom:6px;">Urgence</label>

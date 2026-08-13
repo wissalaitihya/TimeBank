@@ -23,12 +23,13 @@ class StoreServiceRequestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'skill_id'      => 'required|exists:skills,id',
-            'titre'         => 'required|string|max:255',
-            'description'   => 'required|string|min:20',
-            'duree_estimee' => 'required|numeric|min:0.25|max:8',
-            'urgence'       => 'sometimes|in:low,normal,high',
-        ];
+        'titre' => ['required', 'string', 'max:80'],
+        'description' => ['required', 'string', 'max:1000',  'min:20'],
+        'skill_id' => ['required', 'exists:skills,id'],
+        'offer_id' => ['nullable', 'exists:service_offers,id'],
+        'duree_estimee' => ['required', 'numeric', 'min:0.25', 'max:8'],
+        'urgence' => ['required', 'in:low,normal,high'],
+    ];
     }
 
     public function messages(): array
@@ -36,6 +37,7 @@ class StoreServiceRequestRequest extends FormRequest
         return [
             'skill_id.required'      => 'La compétence est obligatoire.',
             'skill_id.exists'        => 'La compétence sélectionnée est invalide.',
+            'offer_id.exists' =>        'L’offre sélectionnée est invalide.',
             'titre.required'         => 'Le titre est obligatoire.',
             'description.required'   => 'La description est obligatoire.',
             'description.min'        => 'La description doit contenir au moins 20 caractères.',

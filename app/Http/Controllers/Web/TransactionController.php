@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Models\Transaction;
 use Illuminate\Http\Request;
 
 class TransactionController extends Controller
@@ -11,24 +12,32 @@ class TransactionController extends Controller
     {
         $user = $request->user();
 
-        $transactions = $user->transactionsReceived()
-            ->with(['fromUser', 'toUser', 'match.offer.skill'])
-            ->union(
-                $user->transactionsSent()
-                    ->with(['fromUser', 'toUser', 'match.offer.skill'])
-            )
-            ->latest()
-            ->paginate(20);
+    $transactions = \App\Models\Transaction::query()
+        ->with(['fromUser', 'toUser', 'match.offer.skill'])
+        ->where(function ($query) use ($user) {
+            $query->where('from_user_id', $user->id)
+                ->orWhere('to_user_id', $user->id);
+        })
+        ->latest()
+        ->paginate(20);
 
-        $stats = [
-            'total_credit' => $user->transactionsReceived()
-                ->where('type', 'credit')->sum('heures'),
-            'total_debit'  => $user->transactionsSent()
-                ->where('type', 'debit')->sum('heures'),
-            'total_tx'     => $user->transactionsReceived()->count()
-                + $user->transactionsSent()->count(),
-        ];
+    $stats = [
+        'total_credit' => \App\Models\Transaction::query()
+            ->where('to_user_id', $user->id)
+            ->sum('heures'),
 
-        return view('transactions.index', compact('transactions', 'stats'));
+        'total_debit' => \App\Models\Transaction::query()
+            ->where('from_user_id', $user->id)
+            ->sum('heures'),
+
+        'total_tx' => \App\Models\Transaction::query()
+            ->where(function ($query) use ($user) {
+                $query->where('from_user_id', $user->id)
+                    ->orWhere('to_user_id', $user->id);
+            })
+            ->count(),
+    ];
+
+    return view('transactions.index', compact('transactions', 'stats'));
     }
 }
